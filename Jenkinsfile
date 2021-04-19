@@ -5,7 +5,7 @@ pipeline {
       steps {
         sh '''
           echo 'Hello World'
-          echo "This is my first project"
+          echo "This is my first test project"
            '''
       }
     }
