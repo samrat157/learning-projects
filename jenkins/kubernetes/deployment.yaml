@@ -58,6 +58,8 @@ spec:
               mountPath: /home/jenkins/.jenkins
       volumes:
         - name: jenkins-data
-          hostPath:
-            path: /run/desktop/mnt/host/d/Work/Scripts/jenkins/JENKINS_HOME/
-            type: Directory
+          persistentVolumeClaim:
+            claimName: jenkins-pv-claim
+          # hostPath:
+          #   path: /run/desktop/mnt/host/d/Work/Scripts/jenkins/JENKINS_HOME/
+          #   type: Directory

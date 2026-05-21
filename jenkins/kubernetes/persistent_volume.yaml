@@ -13,9 +13,9 @@ spec:
   capacity:
     storage: 50Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   local:
-    path: /mnt/d/Work/Scripts/jenkins/JENKINS_HOME
+    path: /run/desktop/mnt/host/d/Work/Scripts/jenkins/JENKINS_HOME/
   nodeAffinity:
     required:
       nodeSelectorTerms:
