@@ -1,0 +1,31 @@
+---
+persistentVolume:
+  storageCapacity: 50Gi
+  claimStorageCapacity: 30Gi
+  accessModes: ReadWriteMany
+  localPath: /run/desktop/mnt/host/d/Work/Scripts/jenkins/JENKINS_HOME/
+  mountPath: /home/jenkins/.jenkins
+nodes:
+  - docker-desktop
+replicaCount: 1
+image: 
+  name: jenkins:v1
+  pullPolicy: Never
+# resourcesLimits:
+#   memory: "2Gi"
+#   cpu: "1000m"
+resourceRequests:
+  memory: "500Mi"
+  cpu: "500m"
+port:
+  containerPort: 
+    httpport: 8080
+    jnlpport: 50000
+  servicePort: 8080
+  nodePort: 32000
+serviceType: NodePort
+ingress:
+  path: /
+  pathType: Prefix
+  ingressClass: 
+    name: nginx

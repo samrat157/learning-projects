@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Chart.Name }}-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: {{ .Chart.Name }}-local-storage
+  claimRef:
+    name: {{ .Chart.Name }}-pv-claim
+    namespace: {{ .Chart.Name }}
+  capacity:
+    storage: {{ .Values.persistentVolume.storageCapacity }}
+  accessModes:
+    - {{ .Values.persistentVolume.accessModes }}
+  local:
+    path: {{ .Values.persistentVolume.localPath }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values: {{ .Values.nodes }}

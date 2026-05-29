@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Chart.Name }}-pv-claim
+  namespace: {{ .Chart.Name }}
+spec:
+  storageClassName: {{ .Chart.Name }}-local-storage
+  accessModes:
+    - {{ .Values.persistentVolume.accessModes }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolume.claimStorageCapacity }}

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-ingress
+  namespace: {{ .Chart.Name }}
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/affinity-mode: "persistent"
+    nginx.ingress.kubernetes.io/session-cookie-name: "jenkins-session"
+spec:
+  ingressClassName: {{ .Values.ingress.ingressClass.name }}
+  rules:
+  - host: {{ .Chart.Name }}.local
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Chart.Name }}-service
+            port:
+              number: {{ .Values.port.servicePort }}
+        path: {{ .Values.ingress.path }}
+        pathType: {{ .Values.ingress.pathType }}
+

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}-server
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-server
+    spec:
+      securityContext:
+            # Note: fsGroup may be customized for a bit of better
+            # filesystem security on the shared host
+            fsGroup: 1000
+            runAsUser: 1000
+            ### runAsGroup: 1000
+      serviceAccountName: {{ .Chart.Name }}-admin
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.name }}
+          # OPTIONAL: check for new floating-tag LTS releases whenever the pod is restarted:
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+            requests:
+              memory: {{ .Values.resourceRequests.memory }}
+              cpu: {{ .Values.resourceRequests.cpu }}
+          ports:
+            - name: httpport
+              containerPort: {{ .Values.port.containerPort.httpport }}
+            - name: jnlpport
+              containerPort: {{ .Values.port.containerPort.jnlpport }}
+          livenessProbe:
+            httpGet:
+              path: "/login"
+              port: {{ .Values.port.containerPort.httpport }}
+            initialDelaySeconds: 90
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: "/login"
+              port: {{ .Values.port.containerPort.httpport }}
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          volumeMounts:
+            - name: {{ .Chart.Name }}-data
+              mountPath: {{ .Values.persistentVolume.mountPath }}
+      volumes:
+        - name: {{ .Chart.Name }}-data
+          persistentVolumeClaim:
+            claimName: {{ .Chart.Name }}-pv-claim
+          # hostPath:
+          #   path: /run/desktop/mnt/host/d/Work/Scripts/jenkins/JENKINS_HOME/
+          #   type: Directory
