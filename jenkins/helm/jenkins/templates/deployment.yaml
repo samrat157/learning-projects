@@ -27,21 +27,28 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             limits:
-              memory: "2Gi"
-              cpu: "1000m"
+              memory: {{ .Values.resources.limits.memory }}
+              cpu: {{ .Values.resources.limits.cpu }}
             requests:
-              memory: {{ .Values.resourceRequests.memory }}
-              cpu: {{ .Values.resourceRequests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+              cpu: {{ .Values.resources.requests.cpu }}
           ports:
             - name: httpport
               containerPort: {{ .Values.port.containerPort.httpport }}
             - name: jnlpport
               containerPort: {{ .Values.port.containerPort.jnlpport }}
+          startupProbe:
+            httpGet:
+              path: /login
+              port: 8080
+            initialDelaySeconds: 600
+            failureThreshold: 30 # Allows 5 minutes to start (30 * 10s)
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: "/login"
               port: {{ .Values.port.containerPort.httpport }}
-            initialDelaySeconds: 90
+            initialDelaySeconds: 300
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 5
@@ -49,7 +56,7 @@ spec:
             httpGet:
               path: "/login"
               port: {{ .Values.port.containerPort.httpport }}
-            initialDelaySeconds: 60
+            initialDelaySeconds: 300
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 3
