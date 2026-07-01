@@ -12,6 +12,6 @@ spec:
     app: {{ .Chart.Name }}-server
   type: {{ .Values.serviceType }}
   ports:
-    - port: {{ .Values.port.containerPort.httpport }}
-      targetPort: {{ .Values.port.servicePort }}
+    - port: {{ .Values.port.servicePort }}
+      targetPort: {{ .Values.port.containerPort.httpport }}
       nodePort: {{ .Values.port.nodePort }}

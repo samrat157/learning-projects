@@ -22,7 +22,7 @@ spec:
       serviceAccountName: jenkins-admin
       containers:
         - name: jenkins
-          image: jenkins:v1
+          image: jenkins/jenkins:lts
           # OPTIONAL: check for new floating-tag LTS releases whenever the pod is restarted:
           imagePullPolicy: Never
           resources:
@@ -30,7 +30,7 @@ spec:
               memory: "2Gi"
               cpu: "1000m"
             requests:
-              memory: "500Mi"
+              memory: "1Gi"
               cpu: "500m"
           ports:
             - name: httpport
@@ -55,7 +55,7 @@ spec:
             failureThreshold: 3
           volumeMounts:
             - name: jenkins-data
-              mountPath: /home/jenkins/.jenkins
+              mountPath: /var/jenkins_home
       volumes:
         - name: jenkins-data
           persistentVolumeClaim:
